@@ -1,0 +1,1014 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/L.Control.Layers.Tree.css">
+        <link rel="stylesheet" href="css/qgis2web.css">
+        <link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/L.Control.Layers.Tree.min.js"></script>
+        <script src="js/leaflet-svg-shape-markers.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="data/AdministrativeBoundariesRegion_1.js"></script>
+        <script src="data/MindanaoSPUGAreasspugareas_2.js"></script>
+        <script src="data/VisayasSPUGAreasspugareas_3.js"></script>
+        <script src="data/LuzonSPUGAreasspugareas_4.js"></script>
+        <script src="data/SlopeSuitabilityOfferedSites_5.js"></script>
+        <script src="data/BathymetryMetersBelowSeaLevel_6.js"></script>
+        <script src="data/ExistingProjectswithSolarEnergyOperatingContract_7.js"></script>
+        <script src="data/ExistingProjectswithWindEnergyServiceContract_8.js"></script>
+        <script src="data/ExistingSEOCasofNovember2024_9.js"></script>
+        <script src="data/ExistingWESCasof2025_10.js"></script>
+        <script src="data/OfferedSitesforSolarDevelopment_11.js"></script>
+        <script src="data/NGCPTransmissionLine_12.js"></script>
+        <script src="data/NGCPSubstation_13.js"></script>
+        <script>
+        var map = L.map('map', {
+            zoomControl:false, maxZoom:28, minZoom:1
+        }).fitBounds([[11.008800501473914,117.65675571147221],[19.66248104222616,130.97984000320284]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        // remove popup's row if "visible-with-data"
+        function removeEmptyRowsFromPopupContent(content, feature) {
+         var tempDiv = document.createElement('div');
+         tempDiv.innerHTML = content;
+         var rows = tempDiv.querySelectorAll('tr');
+         for (var i = 0; i < rows.length; i++) {
+             var td = rows[i].querySelector('td.visible-with-data');
+             var key = td ? td.id : '';
+             if (td && td.classList.contains('visible-with-data') && feature.properties[key] == null) {
+                 rows[i].parentNode.removeChild(rows[i]);
+             }
+         }
+         return tempDiv.innerHTML;
+        }
+        // add class to format popup if it contains media
+		function addClassToPopupIfMedia(content, popup) {
+			var tempDiv = document.createElement('div');
+			tempDiv.innerHTML = content;
+			if (tempDiv.querySelector('td img')) {
+				popup._contentNode.classList.add('media');
+					// Delay to force the redraw
+					setTimeout(function() {
+						popup.update();
+					}, 10);
+			} else {
+				popup._contentNode.classList.remove('media');
+			}
+		}
+        var zoomControl = L.control.zoom({
+            position: 'topleft'
+        }).addTo(map);
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0].innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0].className += ' fas fa-ruler';
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_GoogleSatellite_0');
+        map.getPane('pane_GoogleSatellite_0').style.zIndex = 400;
+        var layer_GoogleSatellite_0 = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+            pane: 'pane_GoogleSatellite_0',
+            opacity: 1.0,
+            attribution: '',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 19
+        });
+        layer_GoogleSatellite_0;
+        map.addLayer(layer_GoogleSatellite_0);
+        function pop_AdministrativeBoundariesRegion_1(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td class="visible-with-data" id="Region" colspan="2"><strong>Region</strong><br />' + (feature.properties['Region'] !== null ? autolinker.link(String(feature.properties['Region']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_AdministrativeBoundariesRegion_1_0() {
+            return {
+                pane: 'pane_AdministrativeBoundariesRegion_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1, 
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_AdministrativeBoundariesRegion_1');
+        map.getPane('pane_AdministrativeBoundariesRegion_1').style.zIndex = 401;
+        map.getPane('pane_AdministrativeBoundariesRegion_1').style['mix-blend-mode'] = 'normal';
+        var layer_AdministrativeBoundariesRegion_1 = new L.geoJson(json_AdministrativeBoundariesRegion_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_AdministrativeBoundariesRegion_1',
+            layerName: 'layer_AdministrativeBoundariesRegion_1',
+            pane: 'pane_AdministrativeBoundariesRegion_1',
+            onEachFeature: pop_AdministrativeBoundariesRegion_1,
+            style: style_AdministrativeBoundariesRegion_1_0,
+        });
+        bounds_group.addLayer(layer_AdministrativeBoundariesRegion_1);
+        map.addLayer(layer_AdministrativeBoundariesRegion_1);
+        function pop_MindanaoSPUGAreasspugareas_2(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td class="visible-with-data" id="LOCATION" colspan="2"><strong>LOCATION</strong><br />' + (feature.properties['LOCATION'] !== null ? autolinker.link(String(feature.properties['LOCATION']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="FACILITY NAME" colspan="2"><strong>FACILITY NAME</strong><br />' + (feature.properties['FACILITY NAME'] !== null ? autolinker.link(String(feature.properties['FACILITY NAME']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="SUBTYPE" colspan="2"><strong>SUBTYPE</strong><br />' + (feature.properties['SUBTYPE'] !== null ? autolinker.link(String(feature.properties['SUBTYPE']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="INSTALLED" colspan="2"><strong>INSTALLED</strong><br />' + (feature.properties['INSTALLED'] !== null ? autolinker.link(String(feature.properties['INSTALLED']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="DEPENDABLE" colspan="2"><strong>DEPENDABLE</strong><br />' + (feature.properties['DEPENDABLE'] !== null ? autolinker.link(String(feature.properties['DEPENDABLE']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="OPERATOR" colspan="2"><strong>OPERATOR</strong><br />' + (feature.properties['OPERATOR'] !== null ? autolinker.link(String(feature.properties['OPERATOR']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>OWNER</strong><br />' + (feature.properties['OWNER'] !== null ? autolinker.link(String(feature.properties['OWNER']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="CATEGORY" colspan="2"><strong>CATEGORY</strong><br />' + (feature.properties['CATEGORY'] !== null ? autolinker.link(String(feature.properties['CATEGORY']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_MindanaoSPUGAreasspugareas_2_0(feature) {
+            switch(String(feature.properties['CATEGORY'])) {
+                case '1':
+                    return {
+                pane: 'pane_MindanaoSPUGAreasspugareas_2',
+                stroke: false, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(65,248,52,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '2':
+                    return {
+                pane: 'pane_MindanaoSPUGAreasspugareas_2',
+                stroke: false, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(251,141,141,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '3':
+                    return {
+                pane: 'pane_MindanaoSPUGAreasspugareas_2',
+                stroke: false, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,206,161,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '4':
+                    return {
+                pane: 'pane_MindanaoSPUGAreasspugareas_2',
+                stroke: false, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(31,120,180,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '5':
+                    return {
+                pane: 'pane_MindanaoSPUGAreasspugareas_2',
+                stroke: false, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(215,25,28,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_MindanaoSPUGAreasspugareas_2');
+        map.getPane('pane_MindanaoSPUGAreasspugareas_2').style.zIndex = 402;
+        map.getPane('pane_MindanaoSPUGAreasspugareas_2').style['mix-blend-mode'] = 'normal';
+        var layer_MindanaoSPUGAreasspugareas_2 = new L.geoJson(json_MindanaoSPUGAreasspugareas_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_MindanaoSPUGAreasspugareas_2',
+            layerName: 'layer_MindanaoSPUGAreasspugareas_2',
+            pane: 'pane_MindanaoSPUGAreasspugareas_2',
+            onEachFeature: pop_MindanaoSPUGAreasspugareas_2,
+            style: style_MindanaoSPUGAreasspugareas_2_0,
+        });
+        bounds_group.addLayer(layer_MindanaoSPUGAreasspugareas_2);
+        map.addLayer(layer_MindanaoSPUGAreasspugareas_2);
+        function pop_VisayasSPUGAreasspugareas_3(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td class="visible-with-data" id="LOCATION" colspan="2"><strong>LOCATION</strong><br />' + (feature.properties['LOCATION'] !== null ? autolinker.link(String(feature.properties['LOCATION']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="FACILITY NAME" colspan="2"><strong>FACILITY NAME</strong><br />' + (feature.properties['FACILITY NAME'] !== null ? autolinker.link(String(feature.properties['FACILITY NAME']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="SUBTYPE" colspan="2"><strong>SUBTYPE</strong><br />' + (feature.properties['SUBTYPE'] !== null ? autolinker.link(String(feature.properties['SUBTYPE']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="INSTALLED" colspan="2"><strong>INSTALLED</strong><br />' + (feature.properties['INSTALLED'] !== null ? autolinker.link(String(feature.properties['INSTALLED']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="DEPENDABLE" colspan="2"><strong>DEPENDABLE</strong><br />' + (feature.properties['DEPENDABLE'] !== null ? autolinker.link(String(feature.properties['DEPENDABLE']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="OPERATOR" colspan="2"><strong>OPERATOR</strong><br />' + (feature.properties['OPERATOR'] !== null ? autolinker.link(String(feature.properties['OPERATOR']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>OWNER</strong><br />' + (feature.properties['OWNER'] !== null ? autolinker.link(String(feature.properties['OWNER']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="CATEGORY" colspan="2"><strong>CATEGORY</strong><br />' + (feature.properties['CATEGORY'] !== null ? autolinker.link(String(feature.properties['CATEGORY']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_VisayasSPUGAreasspugareas_3_0(feature) {
+            switch(String(feature.properties['CATEGORY'])) {
+                case '1':
+                    return {
+                pane: 'pane_VisayasSPUGAreasspugareas_3',
+                stroke: false, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(65,248,52,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '2':
+                    return {
+                pane: 'pane_VisayasSPUGAreasspugareas_3',
+                stroke: false, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(251,141,141,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '3':
+                    return {
+                pane: 'pane_VisayasSPUGAreasspugareas_3',
+                stroke: false, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,206,161,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '4':
+                    return {
+                pane: 'pane_VisayasSPUGAreasspugareas_3',
+                stroke: false, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(31,120,180,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '5':
+                    return {
+                pane: 'pane_VisayasSPUGAreasspugareas_3',
+                stroke: false, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(215,25,28,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_VisayasSPUGAreasspugareas_3');
+        map.getPane('pane_VisayasSPUGAreasspugareas_3').style.zIndex = 403;
+        map.getPane('pane_VisayasSPUGAreasspugareas_3').style['mix-blend-mode'] = 'normal';
+        var layer_VisayasSPUGAreasspugareas_3 = new L.geoJson(json_VisayasSPUGAreasspugareas_3, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_VisayasSPUGAreasspugareas_3',
+            layerName: 'layer_VisayasSPUGAreasspugareas_3',
+            pane: 'pane_VisayasSPUGAreasspugareas_3',
+            onEachFeature: pop_VisayasSPUGAreasspugareas_3,
+            style: style_VisayasSPUGAreasspugareas_3_0,
+        });
+        bounds_group.addLayer(layer_VisayasSPUGAreasspugareas_3);
+        map.addLayer(layer_VisayasSPUGAreasspugareas_3);
+        function pop_LuzonSPUGAreasspugareas_4(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td class="visible-with-data" id="LOCATION" colspan="2"><strong>LOCATION</strong><br />' + (feature.properties['LOCATION'] !== null ? autolinker.link(String(feature.properties['LOCATION']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="FACILITY NAME" colspan="2"><strong>FACILITY NAME</strong><br />' + (feature.properties['FACILITY NAME'] !== null ? autolinker.link(String(feature.properties['FACILITY NAME']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="SUBTYPE" colspan="2"><strong>SUBTYPE</strong><br />' + (feature.properties['SUBTYPE'] !== null ? autolinker.link(String(feature.properties['SUBTYPE']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="INSTALLED" colspan="2"><strong>INSTALLED</strong><br />' + (feature.properties['INSTALLED'] !== null ? autolinker.link(String(feature.properties['INSTALLED']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="DEPENDABLE" colspan="2"><strong>DEPENDABLE</strong><br />' + (feature.properties['DEPENDABLE'] !== null ? autolinker.link(String(feature.properties['DEPENDABLE']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="OPERATOR" colspan="2"><strong>OPERATOR</strong><br />' + (feature.properties['OPERATOR'] !== null ? autolinker.link(String(feature.properties['OPERATOR']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>OWNER</strong><br />' + (feature.properties['OWNER'] !== null ? autolinker.link(String(feature.properties['OWNER']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="CATEGORY" colspan="2"><strong>CATEGORY</strong><br />' + (feature.properties['CATEGORY'] !== null ? autolinker.link(String(feature.properties['CATEGORY']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_LuzonSPUGAreasspugareas_4_0(feature) {
+            switch(String(feature.properties['CATEGORY'])) {
+                case '1':
+                    return {
+                pane: 'pane_LuzonSPUGAreasspugareas_4',
+                stroke: false, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(65,248,52,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '2':
+                    return {
+                pane: 'pane_LuzonSPUGAreasspugareas_4',
+                stroke: false, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(251,141,141,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '3':
+                    return {
+                pane: 'pane_LuzonSPUGAreasspugareas_4',
+                stroke: false, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,206,161,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '4':
+                    return {
+                pane: 'pane_LuzonSPUGAreasspugareas_4',
+                stroke: false, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(31,120,180,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '5':
+                    return {
+                pane: 'pane_LuzonSPUGAreasspugareas_4',
+                stroke: false, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(215,25,28,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_LuzonSPUGAreasspugareas_4');
+        map.getPane('pane_LuzonSPUGAreasspugareas_4').style.zIndex = 404;
+        map.getPane('pane_LuzonSPUGAreasspugareas_4').style['mix-blend-mode'] = 'normal';
+        var layer_LuzonSPUGAreasspugareas_4 = new L.geoJson(json_LuzonSPUGAreasspugareas_4, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_LuzonSPUGAreasspugareas_4',
+            layerName: 'layer_LuzonSPUGAreasspugareas_4',
+            pane: 'pane_LuzonSPUGAreasspugareas_4',
+            onEachFeature: pop_LuzonSPUGAreasspugareas_4,
+            style: style_LuzonSPUGAreasspugareas_4_0,
+        });
+        bounds_group.addLayer(layer_LuzonSPUGAreasspugareas_4);
+        map.addLayer(layer_LuzonSPUGAreasspugareas_4);
+        function pop_SlopeSuitabilityOfferedSites_5(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td class="visible-with-data" id="Area (has)" colspan="2"><strong>Area (has)</strong><br />' + (feature.properties['Area (has)'] !== null ? autolinker.link(String(feature.properties['Area (has)']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="Slope Suitability" colspan="2"><strong>Slope Suitability</strong><br />' + (feature.properties['Slope Suitability'] !== null ? autolinker.link(String(feature.properties['Slope Suitability']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="Irradiance" colspan="2"><strong>Irradiance</strong><br />' + (feature.properties['Irradiance'] !== null ? autolinker.link(String(feature.properties['Irradiance']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_SlopeSuitabilityOfferedSites_5_0(feature) {
+            switch(String(feature.properties['Slope Suitability'])) {
+                case 'Highly Acceptable (0-5°)':
+                    return {
+                pane: 'pane_SlopeSuitabilityOfferedSites_5',
+                stroke: false, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(26,150,65,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Acceptable (5-10°)':
+                    return {
+                pane: 'pane_SlopeSuitabilityOfferedSites_5',
+                stroke: false, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(138,204,98,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Marginally Acceptable (10-12°)':
+                    return {
+                pane: 'pane_SlopeSuitabilityOfferedSites_5',
+                stroke: false, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(219,240,158,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Slope Optimization (12-15°)':
+                    return {
+                pane: 'pane_SlopeSuitabilityOfferedSites_5',
+                stroke: false, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(254,223,154,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Not Usable (15° above)':
+                    return {
+                pane: 'pane_SlopeSuitabilityOfferedSites_5',
+                stroke: false, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(215,25,28,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_SlopeSuitabilityOfferedSites_5');
+        map.getPane('pane_SlopeSuitabilityOfferedSites_5').style.zIndex = 405;
+        map.getPane('pane_SlopeSuitabilityOfferedSites_5').style['mix-blend-mode'] = 'normal';
+        var layer_SlopeSuitabilityOfferedSites_5 = new L.geoJson(json_SlopeSuitabilityOfferedSites_5, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_SlopeSuitabilityOfferedSites_5',
+            layerName: 'layer_SlopeSuitabilityOfferedSites_5',
+            pane: 'pane_SlopeSuitabilityOfferedSites_5',
+            onEachFeature: pop_SlopeSuitabilityOfferedSites_5,
+            style: style_SlopeSuitabilityOfferedSites_5_0,
+        });
+        bounds_group.addLayer(layer_SlopeSuitabilityOfferedSites_5);
+        map.addLayer(layer_SlopeSuitabilityOfferedSites_5);
+        function pop_BathymetryMetersBelowSeaLevel_6(feature, layer) {
+            var popupContent = '<table>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_BathymetryMetersBelowSeaLevel_6_0(feature) {
+            switch(String(feature.properties['DN'])) {
+                case '2':
+                    return {
+                pane: 'pane_BathymetryMetersBelowSeaLevel_6',
+                stroke: false, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(1,255,247,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '3':
+                    return {
+                pane: 'pane_BathymetryMetersBelowSeaLevel_6',
+                stroke: false, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(1,166,255,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '4':
+                    return {
+                pane: 'pane_BathymetryMetersBelowSeaLevel_6',
+                stroke: false, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(1,39,255,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '5':
+                    return {
+                pane: 'pane_BathymetryMetersBelowSeaLevel_6',
+                stroke: false, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(3,0,166,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_BathymetryMetersBelowSeaLevel_6');
+        map.getPane('pane_BathymetryMetersBelowSeaLevel_6').style.zIndex = 406;
+        map.getPane('pane_BathymetryMetersBelowSeaLevel_6').style['mix-blend-mode'] = 'normal';
+        var layer_BathymetryMetersBelowSeaLevel_6 = new L.geoJson(json_BathymetryMetersBelowSeaLevel_6, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_BathymetryMetersBelowSeaLevel_6',
+            layerName: 'layer_BathymetryMetersBelowSeaLevel_6',
+            pane: 'pane_BathymetryMetersBelowSeaLevel_6',
+            onEachFeature: pop_BathymetryMetersBelowSeaLevel_6,
+            style: style_BathymetryMetersBelowSeaLevel_6_0,
+        });
+        bounds_group.addLayer(layer_BathymetryMetersBelowSeaLevel_6);
+        map.addLayer(layer_BathymetryMetersBelowSeaLevel_6);
+        function pop_ExistingProjectswithSolarEnergyOperatingContract_7(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2"><strong>Project Name</strong><br />' + (feature.properties['Project Name'] !== null ? autolinker.link(String(feature.properties['Project Name']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_ExistingProjectswithSolarEnergyOperatingContract_7_0() {
+            return {
+                pane: 'pane_ExistingProjectswithSolarEnergyOperatingContract_7',
+                opacity: 1,
+                color: 'rgba(255,124,1,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0, 
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_ExistingProjectswithSolarEnergyOperatingContract_7');
+        map.getPane('pane_ExistingProjectswithSolarEnergyOperatingContract_7').style.zIndex = 407;
+        map.getPane('pane_ExistingProjectswithSolarEnergyOperatingContract_7').style['mix-blend-mode'] = 'normal';
+        var layer_ExistingProjectswithSolarEnergyOperatingContract_7 = new L.geoJson(json_ExistingProjectswithSolarEnergyOperatingContract_7, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_ExistingProjectswithSolarEnergyOperatingContract_7',
+            layerName: 'layer_ExistingProjectswithSolarEnergyOperatingContract_7',
+            pane: 'pane_ExistingProjectswithSolarEnergyOperatingContract_7',
+            onEachFeature: pop_ExistingProjectswithSolarEnergyOperatingContract_7,
+            style: style_ExistingProjectswithSolarEnergyOperatingContract_7_0,
+        });
+        bounds_group.addLayer(layer_ExistingProjectswithSolarEnergyOperatingContract_7);
+        map.addLayer(layer_ExistingProjectswithSolarEnergyOperatingContract_7);
+        function pop_ExistingProjectswithWindEnergyServiceContract_8(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2"><strong>Project Name</strong><br />' + (feature.properties['Project Name'] !== null ? autolinker.link(String(feature.properties['Project Name']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_ExistingProjectswithWindEnergyServiceContract_8_0() {
+            return {
+                pane: 'pane_ExistingProjectswithWindEnergyServiceContract_8',
+                opacity: 1,
+                color: 'rgba(1,255,86,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 3.0, 
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_ExistingProjectswithWindEnergyServiceContract_8');
+        map.getPane('pane_ExistingProjectswithWindEnergyServiceContract_8').style.zIndex = 408;
+        map.getPane('pane_ExistingProjectswithWindEnergyServiceContract_8').style['mix-blend-mode'] = 'normal';
+        var layer_ExistingProjectswithWindEnergyServiceContract_8 = new L.geoJson(json_ExistingProjectswithWindEnergyServiceContract_8, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_ExistingProjectswithWindEnergyServiceContract_8',
+            layerName: 'layer_ExistingProjectswithWindEnergyServiceContract_8',
+            pane: 'pane_ExistingProjectswithWindEnergyServiceContract_8',
+            onEachFeature: pop_ExistingProjectswithWindEnergyServiceContract_8,
+            style: style_ExistingProjectswithWindEnergyServiceContract_8_0,
+        });
+        bounds_group.addLayer(layer_ExistingProjectswithWindEnergyServiceContract_8);
+        map.addLayer(layer_ExistingProjectswithWindEnergyServiceContract_8);
+        function pop_ExistingSEOCasofNovember2024_9(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td class="visible-with-data" id="PROJECT NAME" colspan="2"><strong>PROJECT NAME</strong><br />' + (feature.properties['PROJECT NAME'] !== null ? autolinker.link(String(feature.properties['PROJECT NAME']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="COMPANY NAME" colspan="2"><strong>COMPANY NAME</strong><br />' + (feature.properties['COMPANY NAME'] !== null ? autolinker.link(String(feature.properties['COMPANY NAME']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="POTENTIAL CAPACITY (MW)" colspan="2"><strong>POTENTIAL CAPACITY (MW)</strong><br />' + (feature.properties['POTENTIAL CAPACITY (MW)'] !== null ? autolinker.link(String(feature.properties['POTENTIAL CAPACITY (MW)']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="INSTALLED CAPACITY (MW)" colspan="2"><strong>INSTALLED CAPACITY (MW)</strong><br />' + (feature.properties['INSTALLED CAPACITY (MW)'] !== null ? autolinker.link(String(feature.properties['INSTALLED CAPACITY (MW)']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_ExistingSEOCasofNovember2024_9_0() {
+            return {
+                pane: 'pane_ExistingSEOCasofNovember2024_9',
+                opacity: 1,
+                color: 'rgba(255,1,200,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_ExistingSEOCasofNovember2024_9');
+        map.getPane('pane_ExistingSEOCasofNovember2024_9').style.zIndex = 409;
+        map.getPane('pane_ExistingSEOCasofNovember2024_9').style['mix-blend-mode'] = 'normal';
+        var layer_ExistingSEOCasofNovember2024_9 = new L.geoJson(json_ExistingSEOCasofNovember2024_9, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_ExistingSEOCasofNovember2024_9',
+            layerName: 'layer_ExistingSEOCasofNovember2024_9',
+            pane: 'pane_ExistingSEOCasofNovember2024_9',
+            onEachFeature: pop_ExistingSEOCasofNovember2024_9,
+            style: style_ExistingSEOCasofNovember2024_9_0,
+        });
+        bounds_group.addLayer(layer_ExistingSEOCasofNovember2024_9);
+        map.addLayer(layer_ExistingSEOCasofNovember2024_9);
+        function pop_ExistingWESCasof2025_10(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td class="visible-with-data" id="Name" colspan="2"><strong>Name</strong><br />' + (feature.properties['Name'] !== null ? autolinker.link(String(feature.properties['Name']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_ExistingWESCasof2025_10_0() {
+            return {
+                pane: 'pane_ExistingWESCasof2025_10',
+                opacity: 1,
+                color: 'rgba(1,255,251,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_ExistingWESCasof2025_10');
+        map.getPane('pane_ExistingWESCasof2025_10').style.zIndex = 410;
+        map.getPane('pane_ExistingWESCasof2025_10').style['mix-blend-mode'] = 'normal';
+        var layer_ExistingWESCasof2025_10 = new L.geoJson(json_ExistingWESCasof2025_10, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_ExistingWESCasof2025_10',
+            layerName: 'layer_ExistingWESCasof2025_10',
+            pane: 'pane_ExistingWESCasof2025_10',
+            onEachFeature: pop_ExistingWESCasof2025_10,
+            style: style_ExistingWESCasof2025_10_0,
+        });
+        bounds_group.addLayer(layer_ExistingWESCasof2025_10);
+        map.addLayer(layer_ExistingWESCasof2025_10);
+        function pop_OfferedSitesforSolarDevelopment_11(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td class="visible-with-data" id="Name" colspan="2"><strong>Name</strong><br />' + (feature.properties['Name'] !== null ? autolinker.link(String(feature.properties['Name']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Status</strong><br />' + (feature.properties['Status'] !== null ? autolinker.link(String(feature.properties['Status']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td class="visible-with-data" id="Technical Remarks " colspan="2"><strong>Technical Remarks </strong><br />' + (feature.properties['Technical Remarks '] !== null ? autolinker.link(String(feature.properties['Technical Remarks ']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_OfferedSitesforSolarDevelopment_11_0() {
+            return {
+                pane: 'pane_OfferedSitesforSolarDevelopment_11',
+                opacity: 1,
+                color: 'rgba(255,255,1,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_OfferedSitesforSolarDevelopment_11');
+        map.getPane('pane_OfferedSitesforSolarDevelopment_11').style.zIndex = 411;
+        map.getPane('pane_OfferedSitesforSolarDevelopment_11').style['mix-blend-mode'] = 'normal';
+        var layer_OfferedSitesforSolarDevelopment_11 = new L.geoJson(json_OfferedSitesforSolarDevelopment_11, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_OfferedSitesforSolarDevelopment_11',
+            layerName: 'layer_OfferedSitesforSolarDevelopment_11',
+            pane: 'pane_OfferedSitesforSolarDevelopment_11',
+            onEachFeature: pop_OfferedSitesforSolarDevelopment_11,
+            style: style_OfferedSitesforSolarDevelopment_11_0,
+        });
+        bounds_group.addLayer(layer_OfferedSitesforSolarDevelopment_11);
+        map.addLayer(layer_OfferedSitesforSolarDevelopment_11);
+        function pop_NGCPTransmissionLine_12(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td class="visible-with-data" id="Name" colspan="2"><strong>Name</strong><br />' + (feature.properties['Name'] !== null ? autolinker.link(String(feature.properties['Name']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_NGCPTransmissionLine_12_0() {
+            return {
+                pane: 'pane_NGCPTransmissionLine_12',
+                opacity: 1,
+                color: 'rgba(196,60,57,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_NGCPTransmissionLine_12');
+        map.getPane('pane_NGCPTransmissionLine_12').style.zIndex = 412;
+        map.getPane('pane_NGCPTransmissionLine_12').style['mix-blend-mode'] = 'normal';
+        var layer_NGCPTransmissionLine_12 = new L.geoJson(json_NGCPTransmissionLine_12, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_NGCPTransmissionLine_12',
+            layerName: 'layer_NGCPTransmissionLine_12',
+            pane: 'pane_NGCPTransmissionLine_12',
+            onEachFeature: pop_NGCPTransmissionLine_12,
+            style: style_NGCPTransmissionLine_12_0,
+        });
+        bounds_group.addLayer(layer_NGCPTransmissionLine_12);
+        function pop_NGCPSubstation_13(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2"><strong>Name</strong><br />' + (feature.properties['Name'] !== null ? autolinker.link(String(feature.properties['Name']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_NGCPSubstation_13_0(feature) {
+            switch(String(feature.properties['SS Capacity'])) {
+                case '230':
+                    return {
+                pane: 'pane_NGCPSubstation_13',
+                shape: 'square',
+                radius: 5.6,
+                opacity: 1,
+                color: 'rgba(255,1,5,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(121,206,202,0.0)',
+                interactive: false,
+            }
+                    break;
+                case '350':
+                    return {
+                pane: 'pane_NGCPSubstation_13',
+                shape: 'square',
+                radius: 5.6,
+                opacity: 1,
+                color: 'rgba(29,112,167,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(234,24,31,0.0)',
+                interactive: false,
+            }
+                    break;
+                case '500':
+                    return {
+                pane: 'pane_NGCPSubstation_13',
+                shape: 'square',
+                radius: 5.6,
+                opacity: 1,
+                color: 'rgba(29,112,167,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(234,24,31,0.0)',
+                interactive: false,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_NGCPSubstation_13');
+        map.getPane('pane_NGCPSubstation_13').style.zIndex = 413;
+        map.getPane('pane_NGCPSubstation_13').style['mix-blend-mode'] = 'normal';
+        var layer_NGCPSubstation_13 = new L.geoJson(json_NGCPSubstation_13, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_NGCPSubstation_13',
+            layerName: 'layer_NGCPSubstation_13',
+            pane: 'pane_NGCPSubstation_13',
+            onEachFeature: pop_NGCPSubstation_13,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.shapeMarker(latlng, style_NGCPSubstation_13_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_NGCPSubstation_13);
+        map.addLayer(layer_NGCPSubstation_13);
+        var osmGeocoder = new L.Control.Geocoder({
+            collapsed: true,
+            position: 'topleft',
+            text: 'Search',
+            title: 'Testing'
+        }).addTo(map);
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .className += ' fa fa-search';
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .title += 'Search for a place';
+        var overlaysTree = [
+        {label: '<b>Existing Grid Connections</b>', selectAllCheckbox: true, children: [
+            {label: 'NGCP Substation<br /><table><tr><td style="text-align: center;"><img src="legend/NGCPSubstation_13_2300.png" /></td><td>230</td></tr><tr><td style="text-align: center;"><img src="legend/NGCPSubstation_13_3501.png" /></td><td>350</td></tr><tr><td style="text-align: center;"><img src="legend/NGCPSubstation_13_5002.png" /></td><td>500</td></tr></table>', layer: layer_NGCPSubstation_13},
+            {label: '<img src="legend/NGCPTransmissionLine_12.png" /> NGCP Transmission Line', layer: layer_NGCPTransmissionLine_12},]},
+            {label: '<img src="legend/OfferedSitesforSolarDevelopment_11.png" /> Offered Sites for Solar Development', layer: layer_OfferedSitesforSolarDevelopment_11},
+        {label: '<b>Existing Renewable Energy Contracts</b>', selectAllCheckbox: true, children: [
+            {label: '<img src="legend/ExistingWESCasof2025_10.png" /> Existing WESC as of 2025', layer: layer_ExistingWESCasof2025_10},
+            {label: '<img src="legend/ExistingSEOCasofNovember2024_9.png" /> Existing SEOC as of November 2024', layer: layer_ExistingSEOCasofNovember2024_9},]},
+        {label: '<b>CTGRI - Existing WESC and SEOC</b>', selectAllCheckbox: true, children: [
+            {label: '<img src="legend/ExistingProjectswithWindEnergyServiceContract_8.png" /> Existing Projects with Wind Energy Service Contract', layer: layer_ExistingProjectswithWindEnergyServiceContract_8},
+            {label: '<img src="legend/ExistingProjectswithSolarEnergyOperatingContract_7.png" /> Existing Projects with Solar Energy Operating Contract ', layer: layer_ExistingProjectswithSolarEnergyOperatingContract_7},
+            {label: 'Bathymetry - Meters Below Sea Level<br /><table><tr><td style="text-align: center;"><img src="legend/BathymetryMetersBelowSeaLevel_6_400MBSL0.png" /></td><td>-40 - 0 MBSL</td></tr><tr><td style="text-align: center;"><img src="legend/BathymetryMetersBelowSeaLevel_6_5040MBSL1.png" /></td><td>-50 - -40 MBSL</td></tr><tr><td style="text-align: center;"><img src="legend/BathymetryMetersBelowSeaLevel_6_6050MBSL2.png" /></td><td>-60 - -50 MBSL</td></tr><tr><td style="text-align: center;"><img src="legend/BathymetryMetersBelowSeaLevel_6_60MBSL3.png" /></td><td>> -60 MBSL</td></tr></table>', layer: layer_BathymetryMetersBelowSeaLevel_6},
+            {label: 'Slope Suitability - Offered Sites <br /><table><tr><td style="text-align: center;"><img src="legend/SlopeSuitabilityOfferedSites_5_HighlyAcceptable050.png" /></td><td>Highly Acceptable (0-5°)</td></tr><tr><td style="text-align: center;"><img src="legend/SlopeSuitabilityOfferedSites_5_Acceptable5101.png" /></td><td>Acceptable (5-10°)</td></tr><tr><td style="text-align: center;"><img src="legend/SlopeSuitabilityOfferedSites_5_MarginallyAcceptable10122.png" /></td><td>Marginally Acceptable (10-12°)</td></tr><tr><td style="text-align: center;"><img src="legend/SlopeSuitabilityOfferedSites_5_SlopeOptimization12153.png" /></td><td>Slope Optimization (12-15°)</td></tr><tr><td style="text-align: center;"><img src="legend/SlopeSuitabilityOfferedSites_5_NotUsable15above4.png" /></td><td>Not Usable (15° above)</td></tr></table>', layer: layer_SlopeSuitabilityOfferedSites_5},]},
+        {label: '<b>SPUG Areas</b>', selectAllCheckbox: true, children: [
+            {label: 'Luzon SPUG Areas — spugareas<br /><table><tr><td style="text-align: center;"><img src="legend/LuzonSPUGAreasspugareas_4_NoOverlaps0.png" /></td><td>No Overlaps</td></tr><tr><td style="text-align: center;"><img src="legend/LuzonSPUGAreasspugareas_4_OverlapwithWESC1.png" /></td><td>Overlap with WESC</td></tr><tr><td style="text-align: center;"><img src="legend/LuzonSPUGAreasspugareas_4_OverlapwithSEOC2.png" /></td><td>Overlap with SEOC</td></tr><tr><td style="text-align: center;"><img src="legend/LuzonSPUGAreasspugareas_4_OverlapwithHydro3.png" /></td><td>Overlap with Hydro</td></tr><tr><td style="text-align: center;"><img src="legend/LuzonSPUGAreasspugareas_4_MultipleRETechnologiesOverlap4.png" /></td><td>Multiple RE Technologies Overlap</td></tr></table>', layer: layer_LuzonSPUGAreasspugareas_4},
+            {label: 'Visayas SPUG Areas — spugareas<br /><table><tr><td style="text-align: center;"><img src="legend/VisayasSPUGAreasspugareas_3_NoOverlaps0.png" /></td><td>No Overlaps</td></tr><tr><td style="text-align: center;"><img src="legend/VisayasSPUGAreasspugareas_3_OverlapwithWESC1.png" /></td><td>Overlap with WESC</td></tr><tr><td style="text-align: center;"><img src="legend/VisayasSPUGAreasspugareas_3_OverlapwithSEOC2.png" /></td><td>Overlap with SEOC</td></tr><tr><td style="text-align: center;"><img src="legend/VisayasSPUGAreasspugareas_3_OverlapwithHydro3.png" /></td><td>Overlap with Hydro</td></tr><tr><td style="text-align: center;"><img src="legend/VisayasSPUGAreasspugareas_3_MultipleRETechnologiesOverlap4.png" /></td><td>Multiple RE Technologies Overlap</td></tr></table>', layer: layer_VisayasSPUGAreasspugareas_3},
+            {label: 'Mindanao SPUG Areas — spugareas<br /><table><tr><td style="text-align: center;"><img src="legend/MindanaoSPUGAreasspugareas_2_NoOverlaps0.png" /></td><td>No Overlaps</td></tr><tr><td style="text-align: center;"><img src="legend/MindanaoSPUGAreasspugareas_2_OverlapwithWESC1.png" /></td><td>Overlap with WESC</td></tr><tr><td style="text-align: center;"><img src="legend/MindanaoSPUGAreasspugareas_2_OverlapwithSEOC2.png" /></td><td>Overlap with SEOC</td></tr><tr><td style="text-align: center;"><img src="legend/MindanaoSPUGAreasspugareas_2_OverlapwithHydro3.png" /></td><td>Overlap with Hydro</td></tr><tr><td style="text-align: center;"><img src="legend/MindanaoSPUGAreasspugareas_2_MultipleRETechnologiesOverlap4.png" /></td><td>Multiple RE Technologies Overlap</td></tr></table>', layer: layer_MindanaoSPUGAreasspugareas_2},]},
+            {label: '<img src="legend/AdministrativeBoundariesRegion_1.png" /> Administrative Boundaries - Region', layer: layer_AdministrativeBoundariesRegion_1},
+        {label: '<b>Base Map</b>', selectAllCheckbox: true, children: [
+            {label: "Google Satellite", layer: layer_GoogleSatellite_0, radioGroup: 'bm' },]},]
+        var lay = L.control.layers.tree(null, overlaysTree,{
+            //namedToggle: true,
+            //selectorBack: false,
+            //closedSymbol: '&#8862; &#x1f5c0;',
+            //openedSymbol: '&#8863; &#x1f5c1;',
+            //collapseAll: 'Collapse all',
+            //expandAll: 'Expand all',
+            collapsed: true,
+        });
+        lay.addTo(map);
+        setBounds();
+        resetLabels([layer_OfferedSitesforSolarDevelopment_11]);
+        map.on("zoomend", function(){
+            resetLabels([layer_OfferedSitesforSolarDevelopment_11]);
+        });
+        map.on("layeradd", function(){
+            resetLabels([layer_OfferedSitesforSolarDevelopment_11]);
+        });
+        map.on("layerremove", function(){
+            resetLabels([layer_OfferedSitesforSolarDevelopment_11]);
+        });
+        </script>
+    </body>
+</html>
